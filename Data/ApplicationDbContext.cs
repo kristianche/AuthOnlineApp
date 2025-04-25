@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using AuthOnlineApp.Models;
 
 namespace AuthOnlineApp.Data
 {
@@ -9,5 +10,6 @@ namespace AuthOnlineApp.Data
             : base(options)
         {
         }
+        public DbSet<AuthOnlineApp.Models.Bid> Bid { get; set; } = default!;
     }
 }

@@ -10,23 +10,23 @@ using AuthOnlineApp.Models;
 
 namespace AuthOnlineApp.Controllers
 {
-    public class BidsController : Controller
+    public class ProductsController : Controller
     {
         private readonly ApplicationDbContext _context;
 
-        public BidsController(ApplicationDbContext context)
+        public ProductsController(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        // GET: Bids
+        // GET: Products
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.Bid.Include(b => b.Product).Include(b => b.User);
+            var applicationDbContext = _context.Product.Include(p => p.CreatedByUser);
             return View(await applicationDbContext.ToListAsync());
         }
 
-        // GET: Bids/Details/5
+        // GET: Products/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -34,45 +34,42 @@ namespace AuthOnlineApp.Controllers
                 return NotFound();
             }
 
-            var bid = await _context.Bid
-                .Include(b => b.Product)
-                .Include(b => b.User)
-                .FirstOrDefaultAsync(m => m.BidId == id);
-            if (bid == null)
+            var product = await _context.Product
+                .Include(p => p.CreatedByUser)
+                .FirstOrDefaultAsync(m => m.ProductId == id);
+            if (product == null)
             {
                 return NotFound();
             }
 
-            return View(bid);
+            return View(product);
         }
 
-        // GET: Bids/Create
+        // GET: Products/Create
         public IActionResult Create()
         {
-            ViewData["ProductId"] = new SelectList(_context.Set<Product>(), "ProductId", "ProductId");
-            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id");
+            ViewData["CreatedByUserId"] = new SelectList(_context.Users, "Id", "Id");
             return View();
         }
 
-        // POST: Bids/Create
+        // POST: Products/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("BidId,Amount,CreatedAt,ProductId,UserId")] Bid bid)
+        public async Task<IActionResult> Create([Bind("ProductId,Name,Description,StartingPrice,CreatedAt,CreatedByUserId")] Product product)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(bid);
+                _context.Add(product);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["ProductId"] = new SelectList(_context.Set<Product>(), "ProductId", "ProductId", bid.ProductId);
-            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", bid.UserId);
-            return View(bid);
+            ViewData["CreatedByUserId"] = new SelectList(_context.Users, "Id", "Id", product.CreatedByUserId);
+            return View(product);
         }
 
-        // GET: Bids/Edit/5
+        // GET: Products/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -80,24 +77,23 @@ namespace AuthOnlineApp.Controllers
                 return NotFound();
             }
 
-            var bid = await _context.Bid.FindAsync(id);
-            if (bid == null)
+            var product = await _context.Product.FindAsync(id);
+            if (product == null)
             {
                 return NotFound();
             }
-            ViewData["ProductId"] = new SelectList(_context.Set<Product>(), "ProductId", "ProductId", bid.ProductId);
-            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", bid.UserId);
-            return View(bid);
+            ViewData["CreatedByUserId"] = new SelectList(_context.Users, "Id", "Id", product.CreatedByUserId);
+            return View(product);
         }
 
-        // POST: Bids/Edit/5
+        // POST: Products/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("BidId,Amount,CreatedAt,ProductId,UserId")] Bid bid)
+        public async Task<IActionResult> Edit(int id, [Bind("ProductId,Name,Description,StartingPrice,CreatedAt,CreatedByUserId")] Product product)
         {
-            if (id != bid.BidId)
+            if (id != product.ProductId)
             {
                 return NotFound();
             }
@@ -106,12 +102,12 @@ namespace AuthOnlineApp.Controllers
             {
                 try
                 {
-                    _context.Update(bid);
+                    _context.Update(product);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!BidExists(bid.BidId))
+                    if (!ProductExists(product.ProductId))
                     {
                         return NotFound();
                     }
@@ -122,12 +118,11 @@ namespace AuthOnlineApp.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["ProductId"] = new SelectList(_context.Set<Product>(), "ProductId", "ProductId", bid.ProductId);
-            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", bid.UserId);
-            return View(bid);
+            ViewData["CreatedByUserId"] = new SelectList(_context.Users, "Id", "Id", product.CreatedByUserId);
+            return View(product);
         }
 
-        // GET: Bids/Delete/5
+        // GET: Products/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -135,36 +130,35 @@ namespace AuthOnlineApp.Controllers
                 return NotFound();
             }
 
-            var bid = await _context.Bid
-                .Include(b => b.Product)
-                .Include(b => b.User)
-                .FirstOrDefaultAsync(m => m.BidId == id);
-            if (bid == null)
+            var product = await _context.Product
+                .Include(p => p.CreatedByUser)
+                .FirstOrDefaultAsync(m => m.ProductId == id);
+            if (product == null)
             {
                 return NotFound();
             }
 
-            return View(bid);
+            return View(product);
         }
 
-        // POST: Bids/Delete/5
+        // POST: Products/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var bid = await _context.Bid.FindAsync(id);
-            if (bid != null)
+            var product = await _context.Product.FindAsync(id);
+            if (product != null)
             {
-                _context.Bid.Remove(bid);
+                _context.Product.Remove(product);
             }
 
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool BidExists(int id)
+        private bool ProductExists(int id)
         {
-            return _context.Bid.Any(e => e.BidId == id);
+            return _context.Product.Any(e => e.ProductId == id);
         }
     }
 }

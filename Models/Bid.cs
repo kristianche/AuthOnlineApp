@@ -1,16 +1,21 @@
-﻿namespace AuthOnlineApp.Models
+﻿using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
+
+namespace AuthOnlineApp.Models
 {
     public class Bid
     {
         public int BidId { get; set; }
-        public double Price { get; set; }
-        public DateTime Date { get; set; }
-        public string UserId { get; set; }
-        public int ProductId { get; set; }
 
-        public Bid()
-        {
-            
-        }
+        [Precision(18, 2)]
+        public decimal Amount { get; set; }
+
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+
+        public int ProductId { get; set; }
+        public Product Product { get; set; }
+
+        public string UserId { get; set; }
+        public ApplicationUser User { get; set; }
     }
 }

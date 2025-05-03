@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using System.Security.Cryptography;
 
-namespace AuthOnlineApp.Models 
+namespace AuthOnlineApp.Data 
 {
     public class ApplicationUser : IdentityUser
     {

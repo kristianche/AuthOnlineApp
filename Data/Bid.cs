@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 
-namespace AuthOnlineApp.Models
+namespace AuthOnlineApp.Data
 {
     public class Bid
     {

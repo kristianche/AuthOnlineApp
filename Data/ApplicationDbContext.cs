@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using AuthOnlineApp.Models;
+using Microsoft.AspNetCore.Identity;
 
 namespace AuthOnlineApp.Data
 {
@@ -22,8 +22,8 @@ namespace AuthOnlineApp.Data
                 .HasForeignKey(p => p.CreatedByUserId)
                 .OnDelete(DeleteBehavior.Restrict);
         }
-        public DbSet<AuthOnlineApp.Models.Bid> Bid { get; set; } = default!;
-        public DbSet<AuthOnlineApp.Models.Product> Product { get; set; } = default!;
+        public DbSet<Bid> Bid { get; set; } = default!;
+        public DbSet<Product> Product { get; set; } = default!;
         
         
 

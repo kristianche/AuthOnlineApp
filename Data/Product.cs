@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.Security.Cryptography;
 
-namespace AuthOnlineApp.Models
+namespace AuthOnlineApp.Data
 {
     public class Product
     {
@@ -20,9 +20,9 @@ namespace AuthOnlineApp.Models
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
         public string CreatedByUserId { get; set; }
-        public ApplicationUser CreatedByUser { get; set; }
+        public virtual ApplicationUser? CreatedByUser { get; set; }
 
-        public ICollection<Bid> Bids { get; set; }
+        public virtual ICollection<Bid>? Bids { get; set; }
 
     }
 }

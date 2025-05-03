@@ -1,4 +1,7 @@
-﻿@{
+﻿@model List<AuthOnlineApp.Data.Product>
+
+
+@{
     ViewData["Title"] = "Home Page";
 }
 
@@ -6,3 +9,37 @@
     <h1 class="display-4">Welcome</h1>
     <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
 </div>
+
+
+<form asp-action="Index" method="get">
+    <div class="input-group mb-3">
+        <input type="text" class="form-control" name="searchString" placeholder="Search products..." value="@ViewData["CurrentFilter"]" />
+        <button class="btn btn-primary" type="submit">Search</button>
+    </div>
+</form>
+
+
+@if (Model != null && Model.Any())
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Starting Price</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.Name</td>
+                    <td>@item.StartingPrice</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>No products found.</p>
+}

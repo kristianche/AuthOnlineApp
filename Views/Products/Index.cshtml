@@ -47,7 +47,7 @@
                 @Html.DisplayFor(modelItem => item.CreatedAt)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.CreatedByUser.Id)
+                @Html.DisplayFor(modelItem => item.CreatedByUser.UserName)
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.ProductId">Edit</a> |

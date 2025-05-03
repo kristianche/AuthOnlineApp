@@ -6,16 +6,20 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using AuthOnlineApp.Data;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
 
 namespace AuthOnlineApp.Controllers
 {
     public class BidsController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public BidsController(ApplicationDbContext context)
+        public BidsController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         // GET: Bids
@@ -46,13 +50,16 @@ namespace AuthOnlineApp.Controllers
         }
 
         // GET: Bids/Create
-        public IActionResult Create()
+        [Authorize]
+        public async Task<IActionResult> CreateAsync()
         {
             ViewData["ProductId"] = new SelectList(_context.Set<Product>(), "ProductId", "ProductId");
-            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id");
+            var userId = (await _userManager.GetUserAsync(User)).Id;
+            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", userId);
             return View();
         }
 
+        [Authorize]
         // POST: Bids/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -62,13 +69,23 @@ namespace AuthOnlineApp.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(bid);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                var product = _context.Product.Find(bid.ProductId);
+                var startingPrice = product.StartingPrice;
+                if (bid.Amount <= startingPrice)
+                {
+                    ModelState.AddModelError("Amount", "Amount should be at least equal to starting price.");
+                }
+                else
+                {
+                    _context.Add(bid);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
             }
             ViewData["ProductId"] = new SelectList(_context.Set<Product>(), "ProductId", "ProductId", bid.ProductId);
-            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", bid.UserId);
-            return View(bid);
+            var userId = (await _userManager.GetUserAsync(User)).Id;
+            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", userId);
+            return View();
         }
 
         // GET: Bids/Edit/5
@@ -122,7 +139,8 @@ namespace AuthOnlineApp.Controllers
                 return RedirectToAction(nameof(Index));
             }
             ViewData["ProductId"] = new SelectList(_context.Set<Product>(), "ProductId", "ProductId", bid.ProductId);
-            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", bid.UserId);
+            var userId = (await _userManager.GetUserAsync(User)).Id;
+            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", userId);
             return View(bid);
         }
 

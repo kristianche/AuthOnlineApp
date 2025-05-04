@@ -31,7 +31,11 @@
                 <img src="@item.ImageUrl" alt="@item.Name" class="product-image" />
                 <h5 class="product-name">@item.Name</h5>
                 <p class="product-price">Starting Price: @item.StartingPrice</p>
-                <p class="current-bid">Current Bid: 
+                <p class="product-price">Deadline: @item.Deadline</p>
+
+
+                <p class="current-bid">Current Bids: @item.Bids?.Count</p>
+                <p class="current-bid">Highest Bid: 
                     @if(item.Bids?.Count > 0)
                     {
                         @item.Bids.Max(bid => bid.Amount)

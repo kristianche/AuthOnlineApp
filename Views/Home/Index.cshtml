@@ -20,11 +20,18 @@
                 <img src="@item.ImageUrl" alt="@item.Name" class="product-image" />
                 <h5 class="product-name">@item.Name</h5>
                 <p class="product-price">Starting Price: @item.StartingPrice</p>
-                <p class="current-bid">Current Bid: @item.Bids?.Count </p>
+                <p class="current-bid">Current Bid: @item.Bids?.Count</p>
+
                 <p>
                     <button type="button" class="btn btn-primary">Bid</button>
                 </p>
-        
+
+                <!-- Button to go to product details page -->
+                <p>
+                    <a href="@Url.Action("Details", "Products", new { id = item.ProductId })" class="btn btn-secondary">
+                        View Details
+                    </a>
+                </p>
             </div>
         }
     </div>

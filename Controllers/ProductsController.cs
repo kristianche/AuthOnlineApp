@@ -23,13 +23,23 @@ namespace AuthOnlineApp.Controllers
         }
 
         // GET: Products
+        [Authorize]
         public async Task<IActionResult> Index()
         {
-            var userId = (await _userManager.GetUserAsync(User)).Id;
-            var applicationDbContext = _context.Product
-                .Where(item => item.CreatedByUserId == userId)
-                .Include(p => p.CreatedByUser);
-            return View(await applicationDbContext.ToListAsync());
+            if (User.IsInRole("Admin"))
+            {
+                var items = _context.Bid
+                    .Include(b => b.Product).Include(b => b.User);
+                return View(await items.ToListAsync());
+            }
+            else
+            {
+                var userId = (await _userManager.GetUserAsync(User)).Id;
+                var applicationDbContext = _context.Product
+                    .Where(item => item.CreatedByUserId == userId)
+                    .Include(p => p.CreatedByUser);
+                return View(await applicationDbContext.ToListAsync());
+            }
         }
 
         // GET: Products/Details/5

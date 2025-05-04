@@ -47,10 +47,10 @@
                 </p>
 
                 <p>
-                    <button type="button" class="btn btn-primary">Bid</button>
+                    <a href="@Url.Action("Create", "Bids", new { productId = item.ProductId })" class="btn btn-primary">
+                        Place Bid
+                    </a>
                 </p>
-
-                <!-- Button to go to product details page -->
                 <p>
                     <a href="@Url.Action("Details", "Products", new { id = item.ProductId })" class="btn btn-secondary">
                         View Details

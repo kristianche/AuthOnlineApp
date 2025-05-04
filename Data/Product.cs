@@ -21,6 +21,7 @@ namespace AuthOnlineApp.Data
         public decimal StartingPrice { get; set; }
         public string ImageUrl { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        public DateTime Deadline { get; set; }
 
         [Required(ErrorMessage = "CreatedByUserId is required.")]
         public string CreatedByUserId { get; set; }

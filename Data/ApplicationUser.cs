@@ -5,8 +5,8 @@ namespace AuthOnlineApp.Data
 {
     public class ApplicationUser : IdentityUser
     {
-        public ICollection<Product> Products { get; set; }
-        public ICollection<Bid> Bids { get; set; }
+        public virtual ICollection<Product> Products { get; set; }
+        public virtual ICollection<Bid> Bids { get; set; }
 
     }
 }

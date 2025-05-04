@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using AuthOnlineApp.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Configuration.UserSecrets;
 
 namespace AuthOnlineApp.Controllers
 {
@@ -97,10 +98,15 @@ namespace AuthOnlineApp.Controllers
                 return NotFound();
             }
 
+            var userId = (await _userManager.GetUserAsync(User)).Id;
             var product = await _context.Product.FindAsync(id);
             if (product == null)
             {
                 return NotFound();
+            }
+            if(product.CreatedByUserId != userId && !User.IsInRole("Admin"))
+            {
+                return Unauthorized();
             }
             ViewData["CreatedByUserId"] = new SelectList(_context.Users, "Id", "Id", product.CreatedByUserId);
             return View(product);

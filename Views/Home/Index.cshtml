@@ -4,10 +4,21 @@
     ViewData["Title"] = "Home Page";
 }
 
+
+
 <form asp-action="Index" method="get">
     <div class="input-group mb-3">
+        
         <input type="text" class="form-control" name="searchString" placeholder="Search products..." value="@ViewData["CurrentFilter"]" />
-        <button class="btn btn-primary" type="submit">Search</button>
+
+        
+        <input type="number" step="0.01" class="form-control" name="minPrice" placeholder="Min Price" value="@ViewData["MinPriceFilter"]" />
+
+        
+        <input type="number" step="0.01" class="form-control" name="maxPrice" placeholder="Max Price" value="@ViewData["MaxPriceFilter"]" />
+
+        
+        <button class="btn btn-primary" type="submit">Filter</button>
     </div>
 </form>
 

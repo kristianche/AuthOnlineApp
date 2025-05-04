@@ -18,18 +18,35 @@ namespace AuthOnlineApp.Controllers
             _context = context;
         }
 
-        public async Task<IActionResult> Index(string? searchString)
+        public async Task<IActionResult> Index(string? searchString, decimal? minPrice, decimal? maxPrice)
         {
+            // Записваме филтрите в ViewData, за да ги използваме в изгледа
             ViewData["CurrentFilter"] = searchString;
+            ViewData["MinPriceFilter"] = minPrice;
+            ViewData["MaxPriceFilter"] = maxPrice;
 
-            var products = from p in _context.Product
-                           select p;
+            
+            var products = _context.Product.AsQueryable();
 
+            
             if (!string.IsNullOrEmpty(searchString))
             {
                 products = products.Where(p => p.Name.Contains(searchString));
             }
 
+            
+            if (minPrice.HasValue)
+            {
+                products = products.Where(p => p.StartingPrice >= minPrice.Value);
+            }
+
+            
+            if (maxPrice.HasValue)
+            {
+                products = products.Where(p => p.StartingPrice <= maxPrice.Value);
+            }
+
+            
             return View(await products.ToListAsync());
         }
 
@@ -44,5 +61,7 @@ namespace AuthOnlineApp.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
+
+
     }
 }

@@ -23,10 +23,23 @@ namespace AuthOnlineApp.Controllers
         }
 
         // GET: Bids
+        [Authorize]
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.Bid.Include(b => b.Product).Include(b => b.User);
-            return View(await applicationDbContext.ToListAsync());
+            if (User.IsInRole("Admin"))
+            {
+                var items = _context.Bid
+                    .Include(b => b.Product).Include(b => b.User);
+                return View(await items.ToListAsync());
+            }
+            else
+            {
+                var userId = (await _userManager.GetUserAsync(User)).Id;
+                var items = _context.Bid
+                    .Where(item => item.UserId == userId)
+                    .Include(b => b.Product).Include(b => b.User);
+                return View(await items.ToListAsync());
+            }
         }
 
         // GET: Bids/Details/5

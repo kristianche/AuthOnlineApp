@@ -76,7 +76,7 @@ namespace AuthOnlineApp.Controllers
         [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ProductId,Name,Description,StartingPrice,CreatedAt,CreatedByUserId")] Product product)
+        public async Task<IActionResult> Create(Product product)
         {
             if (ModelState.IsValid)
             {
@@ -112,7 +112,7 @@ namespace AuthOnlineApp.Controllers
         [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ProductId,Name,Description,StartingPrice,CreatedAt,CreatedByUserId")] Product product)
+        public async Task<IActionResult> Edit(int id,  Product product)
         {
             if (id != product.ProductId)
             {

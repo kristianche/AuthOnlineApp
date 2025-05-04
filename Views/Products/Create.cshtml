@@ -28,6 +28,11 @@
                 <input asp-for="StartingPrice" class="form-control" />
                 <span asp-validation-for="StartingPrice" class="text-danger"></span>
             </div>
+            <div class="form-group">
+                <label asp-for="ImageUrl" class="control-label"></label>
+                <input asp-for="ImageUrl" class="form-control" />
+                <span asp-validation-for="ImageUrl" class="text-danger"></span>
+            </div>
             <div class="form-group d-none">
                 <label asp-for="CreatedAt" class="control-label"></label>
                 <input asp-for="CreatedAt" class="form-control" value="@DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss")" />

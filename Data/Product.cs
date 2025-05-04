@@ -19,7 +19,7 @@ namespace AuthOnlineApp.Data
         [Range(0.01, double.MaxValue, ErrorMessage = "Starting price must be greater than zero!")]
         [Precision(18, 2)]
         public decimal StartingPrice { get; set; }
-
+        public string ImageUrl { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
         [Required(ErrorMessage = "CreatedByUserId is required.")]

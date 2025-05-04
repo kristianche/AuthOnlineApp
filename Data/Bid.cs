@@ -16,7 +16,6 @@ namespace AuthOnlineApp.Data
 
         [Required(ErrorMessage = "Product ID is required.")]
         public int ProductId { get; set; }
-        [Required(ErrorMessage = "Product reference is required!")]
         public virtual Product? Product { get; set; }
 
         [Required(ErrorMessage = "User ID is required!")]

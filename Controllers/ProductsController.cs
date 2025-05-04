@@ -25,7 +25,10 @@ namespace AuthOnlineApp.Controllers
         // GET: Products
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.Product.Include(p => p.CreatedByUser);
+            var userId = (await _userManager.GetUserAsync(User)).Id;
+            var applicationDbContext = _context.Product
+                .Where(item => item.CreatedByUserId == userId)
+                .Include(p => p.CreatedByUser);
             return View(await applicationDbContext.ToListAsync());
         }
 

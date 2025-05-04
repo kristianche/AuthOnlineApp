@@ -35,20 +35,35 @@ namespace AuthOnlineApp.Controllers
             }
 
             
-            if (minPrice.HasValue)
+            if (minPrice.HasValue || maxPrice.HasValue)
             {
-                products = products.Where(p => p.StartingPrice >= minPrice.Value);
-            }
+                var filteredProducts = products
+                    .Select(p => new
+                    {
+                        Product = p,
+                        HighestBid = p.Bids != null && p.Bids.Any() ? p.Bids.Max(b => b.Amount) : p.StartingPrice
+                    });
 
-            
-            if (maxPrice.HasValue)
-            {
-                products = products.Where(p => p.StartingPrice <= maxPrice.Value);
+                
+                if (minPrice.HasValue)
+                {
+                    filteredProducts = filteredProducts.Where(p => p.HighestBid >= minPrice.Value);
+                }
+
+                
+                if (maxPrice.HasValue)
+                {
+                    filteredProducts = filteredProducts.Where(p => p.HighestBid <= maxPrice.Value);
+                }
+
+                
+                products = filteredProducts.Select(p => p.Product);
             }
 
             
             return View(await products.ToListAsync());
         }
+
 
 
         public IActionResult Privacy()

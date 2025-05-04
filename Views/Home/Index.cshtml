@@ -3,7 +3,6 @@
 @{
     ViewData["Title"] = "Home Page";
 }
-    
 
 <form asp-action="Index" method="get">
     <div class="input-group mb-3">
@@ -21,6 +20,11 @@
                 <img src="@item.ImageUrl" alt="@item.Name" class="product-image" />
                 <h5 class="product-name">@item.Name</h5>
                 <p class="product-price">Starting Price: @item.StartingPrice</p>
+                <p class="current-bid">Current Bid: @item.Bids?.Count </p>
+                <p>
+                    <button type="button" class="btn btn-primary">Bid</button>
+                </p>
+        
             </div>
         }
     </div>

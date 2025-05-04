@@ -8,16 +8,16 @@
 
 <form asp-action="Index" method="get">
     <div class="input-group mb-3">
-        
+
         <input type="text" class="form-control" name="searchString" placeholder="Search products..." value="@ViewData["CurrentFilter"]" />
 
-        
-        <input type="number" step="0.01" class="form-control" name="minPrice" placeholder="Minimum Highest Bid" value="@ViewData["MinPriceFilter"]" />
 
-        
-        <input type="number" step="0.01" class="form-control" name="maxPrice" placeholder="Maximum Highest Bid" value="@ViewData["MaxPriceFilter"]" />
+        <input type="number" step="0.01" class="form-control" name="minPrice" placeholder="Min Price" value="@ViewData["MinPriceFilter"]" />
 
-        
+
+        <input type="number" step="0.01" class="form-control" name="maxPrice" placeholder="Max Price" value="@ViewData["MaxPriceFilter"]" />
+
+
         <button class="btn btn-primary" type="submit">Filter</button>
     </div>
 </form>
@@ -35,8 +35,9 @@
 
 
                 <p class="current-bid">Current Bids: @item.Bids?.Count</p>
-                <p class="current-bid">Highest Bid: 
-                    @if(item.Bids?.Count > 0)
+                <p class="current-bid">
+                    Highest Bid:
+                    @if (item.Bids?.Count > 0)
                     {
                         @item.Bids.Max(bid => bid.Amount)
                     }
@@ -47,10 +48,14 @@
                 </p>
 
                 <p>
-                    <button type="button" class="btn btn-primary">Bid</button>
+                    @if (DateTime.Now <= item.Deadline)
+                    {
+                        <a href="@Url.Action("Create", "Bids", new { productId = item.ProductId })
+                                    " class="btn btn-primary">
+                            Place Bid
+                        </a>
+                    }
                 </p>
-
-                <!-- Button to go to product details page -->
                 <p>
                     <a href="@Url.Action("Details", "Products", new { id = item.ProductId })" class="btn btn-secondary">
                         View Details

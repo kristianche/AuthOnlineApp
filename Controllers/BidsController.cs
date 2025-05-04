@@ -66,7 +66,7 @@ namespace AuthOnlineApp.Controllers
         [Authorize]
         public async Task<IActionResult> CreateAsync()
         {
-            ViewData["ProductId"] = new SelectList(_context.Set<Product>(), "ProductId", "ProductId");
+            ViewData["ProductId"] = new SelectList(_context.Set<Product>(), "ProductId", "Name");
             var userId = (await _userManager.GetUserAsync(User)).Id;
             ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", userId);
             return View();
@@ -95,7 +95,7 @@ namespace AuthOnlineApp.Controllers
                     return RedirectToAction(nameof(Index));
                 }
             }
-            ViewData["ProductId"] = new SelectList(_context.Set<Product>(), "ProductId", "ProductId", bid.ProductId);
+            ViewData["ProductId"] = new SelectList(_context.Set<Product>(), "ProductId", "Name", bid.ProductId);
             var userId = (await _userManager.GetUserAsync(User)).Id;
             ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", userId);
             return View();
@@ -114,7 +114,7 @@ namespace AuthOnlineApp.Controllers
             {
                 return NotFound();
             }
-            ViewData["ProductId"] = new SelectList(_context.Set<Product>(), "ProductId", "ProductId", bid.ProductId);
+            ViewData["ProductId"] = new SelectList(_context.Set<Product>(), "ProductId", "Name", bid.ProductId);
             ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", bid.UserId);
             return View(bid);
         }
@@ -151,7 +151,7 @@ namespace AuthOnlineApp.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["ProductId"] = new SelectList(_context.Set<Product>(), "ProductId", "ProductId", bid.ProductId);
+            ViewData["ProductId"] = new SelectList(_context.Set<Product>(), "ProductId", "Name", bid.ProductId);
             var userId = (await _userManager.GetUserAsync(User)).Id;
             ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", userId);
             return View(bid);

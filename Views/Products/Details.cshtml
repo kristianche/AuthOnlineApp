@@ -5,56 +5,90 @@
     ViewData["Title"] = "Details";
 }
 
-<h1>Details</h1>
+@{
+    var searchUsername = Context.Request.Query["searchUsername"].ToString();
+    var minAmountStr = Context.Request.Query["minAmount"].ToString();
+    var maxAmountStr = Context.Request.Query["maxAmount"].ToString();
+    var minDateStr = Context.Request.Query["minDate"].ToString();
+    var maxDateStr = Context.Request.Query["maxDate"].ToString();
 
+    decimal.TryParse(minAmountStr, out var minAmount);
+    decimal.TryParse(maxAmountStr, out var maxAmount);
+    DateTime.TryParse(minDateStr, out var minDate);
+    DateTime.TryParse(maxDateStr, out var maxDate);
+}
+
+<h2>Product Details</h2>
 <div>
-    <h4>Product</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Name)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Description)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Description)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.StartingPrice)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.StartingPrice)
-        </dd>
-        <dt class="col-sm-2">
-            Image
-        </dt>
-        <dd class="col-sm-10">
-            <img src="@Html.DisplayFor(model => model.ImageUrl)" alt="" width="150" />
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.CreatedAt)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.CreatedAt)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Deadline)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Deadline)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.CreatedByUser)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.CreatedByUser.UserName)
-        </dd>
-    </dl>
+    <p><strong>Name:</strong> @Model.Name</p>
+    <p><strong>Description:</strong> @Model.Description</p>
+    <p><strong>Starting Price:</strong> @Model.StartingPrice</p>
+    <p><strong>Deadline:</strong> @Model.Deadline</p>
+    <p><strong>Created By:</strong> @Model.CreatedByUser?.UserName</p>
+    <p><img src="@Model.ImageUrl" alt="Product Image" style="max-width:300px;" /></p>
 </div>
+
+<h4>Filter Bids</h4>
+<form method="get" class="row g-2 mb-3">
+    <input type="hidden" name="id" value="@Model.ProductId" />
+    <div class="col-md-3">
+        <input type="text" name="searchUsername" value="@searchUsername" class="form-control" placeholder="Username" />
+    </div>
+    <div class="col-md-2">
+        <input type="number" name="minAmount" step="0.01" value="@minAmountStr" class="form-control" placeholder="Min Amount" />
+    </div>
+    <div class="col-md-2">
+        <input type="number" name="maxAmount" step="0.01" value="@maxAmountStr" class="form-control" placeholder="Max Amount" />
+    </div>
+    <div class="col-md-2">
+        <input type="date" name="minDate" value="@minDateStr" class="form-control" />
+    </div>
+    <div class="col-md-2">
+        <input type="date" name="maxDate" value="@maxDateStr" class="form-control" />
+    </div>
+    <div class="col-md-1">
+        <button class="btn btn-primary">Filter</button>
+    </div>
+</form>
+
+@if (Model.Bids != null && Model.Bids.Any())
+{
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Bidder</th>
+                <th>Amount</th>
+                <th>Placed On</th>
+            </tr>
+        </thead>
+        <tbody>
+            @for (int i = 0; i < Model.Bids.Count; i++)
+            {
+                var bid = Model.Bids.ElementAt(i);
+
+                bool matchesUser = string.IsNullOrEmpty(searchUsername) || (bid.User != null && bid.User.UserName != null && bid.User.UserName.Contains(searchUsername, StringComparison.OrdinalIgnoreCase));
+                bool matchesMin = string.IsNullOrEmpty(minAmountStr) || bid.Amount >= minAmount;
+                bool matchesMax = string.IsNullOrEmpty(maxAmountStr) || bid.Amount <= maxAmount;
+                bool matchesMinDate = string.IsNullOrEmpty(minDateStr) || bid.CreatedAt.Date >= minDate.Date;
+                bool matchesMaxDate = string.IsNullOrEmpty(maxDateStr) || bid.CreatedAt.Date <= maxDate.Date;
+
+                if (matchesUser && matchesMin && matchesMax && matchesMinDate && matchesMaxDate)
+                {
+                    <tr>
+                        <td>@bid.User?.UserName</td>
+                        <td>@bid.Amount</td>
+                        <td>@bid.CreatedAt.ToString("g")</td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>No bids found for this product.</p>
+}
+
 <div>
     <a asp-action="Edit" asp-route-id="@Model?.ProductId">Edit</a> |
     <a asp-action="Index">Back to My Products</a>

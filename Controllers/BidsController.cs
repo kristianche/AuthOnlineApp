@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using AuthOnlineApp.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.CodeAnalysis;
 
 namespace AuthOnlineApp.Controllers
 {
@@ -64,9 +65,9 @@ namespace AuthOnlineApp.Controllers
 
         // GET: Bids/Create
         [Authorize]
-        public async Task<IActionResult> CreateAsync()
+        public async Task<IActionResult> CreateAsync(int productId)
         {
-            ViewData["ProductId"] = new SelectList(_context.Set<Product>(), "ProductId", "Name");
+            ViewData["ProductId"] = new SelectList(_context.Set<Product>(), "ProductId", "Name", productId);
             var userId = (await _userManager.GetUserAsync(User)).Id;
             ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", userId);
             return View();

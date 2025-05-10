@@ -9,13 +9,11 @@
     var searchUsername = Context.Request.Query["searchUsername"].ToString();
     var minAmountStr = Context.Request.Query["minAmount"].ToString();
     var maxAmountStr = Context.Request.Query["maxAmount"].ToString();
-    var minDateStr = Context.Request.Query["minDate"].ToString();
-    var maxDateStr = Context.Request.Query["maxDate"].ToString();
+    var filterDateStr = Context.Request.Query["filterDate"].ToString(); // changed here
 
     decimal.TryParse(minAmountStr, out var minAmount);
     decimal.TryParse(maxAmountStr, out var maxAmount);
-    DateTime.TryParse(minDateStr, out var minDate);
-    DateTime.TryParse(maxDateStr, out var maxDate);
+    DateTime.TryParse(filterDateStr, out var filterDate); // changed here
 }
 
 <h2>Product Details</h2>
@@ -40,13 +38,10 @@
     <div class="col-md-2">
         <input type="number" name="maxAmount" step="0.01" value="@maxAmountStr" class="form-control" placeholder="Max Amount" />
     </div>
-    <div class="col-md-2">
-        <input type="date" name="minDate" value="@minDateStr" class="form-control" />
+    <div class="col-md-3">
+        <input type="date" name="filterDate" value="@filterDateStr" class="form-control" placeholder="Bid Date" />
     </div>
     <div class="col-md-2">
-        <input type="date" name="maxDate" value="@maxDateStr" class="form-control" />
-    </div>
-    <div class="col-md-1">
         <button class="btn btn-primary">Filter</button>
     </div>
 </form>
@@ -69,10 +64,9 @@
                 bool matchesUser = string.IsNullOrEmpty(searchUsername) || (bid.User != null && bid.User.UserName != null && bid.User.UserName.Contains(searchUsername, StringComparison.OrdinalIgnoreCase));
                 bool matchesMin = string.IsNullOrEmpty(minAmountStr) || bid.Amount >= minAmount;
                 bool matchesMax = string.IsNullOrEmpty(maxAmountStr) || bid.Amount <= maxAmount;
-                bool matchesMinDate = string.IsNullOrEmpty(minDateStr) || bid.CreatedAt.Date >= minDate.Date;
-                bool matchesMaxDate = string.IsNullOrEmpty(maxDateStr) || bid.CreatedAt.Date <= maxDate.Date;
+                bool matchesDate = string.IsNullOrEmpty(filterDateStr) || bid.CreatedAt.Date == filterDate.Date; // changed here
 
-                if (matchesUser && matchesMin && matchesMax && matchesMinDate && matchesMaxDate)
+                if (matchesUser && matchesMin && matchesMax && matchesDate)
                 {
                     <tr>
                         <td>@bid.User?.UserName</td>

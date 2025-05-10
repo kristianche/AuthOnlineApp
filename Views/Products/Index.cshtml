@@ -2,63 +2,142 @@
 @model IEnumerable<Product>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "My Products";
 }
 
-<h1>My Products</h1>
+<!-- Page Styling -->
+<style>
+    body {
+        background: #f0f2f5; /* Light gray background */
+        font-family: 'Arial', sans-serif;
+    }
 
-<p>
-    <a asp-action="Create">Create New Product</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Name)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Description)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.StartingPrice)
-            </th>
-            <th>Image</th>
-            <th>
-                @Html.DisplayNameFor(model => model.CreatedAt)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CreatedByUser)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Description)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.StartingPrice)
-                </td>
-                <td>
-                    <img src="@Html.DisplayFor(modelItem => item.ImageUrl)" alt="" width="150" />
-                </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CreatedAt)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CreatedByUser.UserName)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.ProductId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.ProductId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.ProductId">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+    h1 {
+        color: #343a40; /* Dark gray color for the title */
+        font-size: 36px;
+        font-weight: 700;
+        text-align: center;
+        margin-top: 50px;
+        margin-bottom: 30px;
+    }
+
+    .card {
+        border: none; /* Remove the default card border */
+        border-radius: 15px; /* Rounded corners for the card */
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+        transition: transform 0.3s ease, box-shadow 0.3s ease; /* Smooth hover effect */
+    }
+
+        .card:hover {
+            transform: translateY(-5px); /* Slightly lift the card on hover */
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* More pronounced shadow */
+        }
+
+    .card-body {
+        background-color: #ffffff; /* White background for card body */
+        padding: 20px;
+        color: #343a40; /* Dark gray text */
+    }
+
+    .card-title {
+        font-size: 24px;
+        font-weight: 600;
+        color: #007bff; /* Blue color for card title */
+        margin-bottom: 15px;
+    }
+
+    .card-text {
+        font-size: 16px;
+        color: #6c757d; /* Lighter gray text for body */
+        margin-bottom: 10px;
+    }
+
+    .card-footer {
+        background-color: #f8f9fa; /* Light background for footer */
+        border-top: 1px solid #ddd;
+        text-align: center;
+        padding: 10px 0;
+    }
+
+    .btn {
+        font-size: 14px;
+        padding: 8px 15px;
+        margin: 5px;
+        border-radius: 5px;
+        transition: all 0.3s ease;
+    }
+
+    .btn-secondary {
+        background-color: #6c757d;
+        color: white;
+    }
+
+    .btn-info {
+        background-color: #17a2b8;
+        color: white;
+    }
+
+    .btn-danger {
+        background-color: #dc3545;
+        color: white;
+    }
+
+    .btn:hover {
+        opacity: 0.8;
+    }
+
+    .btn-sm {
+        font-size: 12px; /* Smaller button font size */
+    }
+
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+
+    .create-btn-container {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+
+    /* Updated Image Styling */
+    .card-img-top {
+        width: 100%; /* Ensure the image stretches to the full width of the card */
+        height: 200px; /* Set a fixed height */
+        object-fit: cover; /* Ensure the image covers the space without distortion */
+        border-top-left-radius: 15px; /* Match the card's rounded corners */
+        border-top-right-radius: 15px; /* Match the card's rounded corners */
+    }
+</style>
+
+<!-- Main content -->
+<div class="container">
+    <h1>My Products</h1>
+
+    <div class="create-btn-container">
+        <a asp-action="Create" class="btn btn-primary mb-4">Create New Product</a>
+    </div>
+
+    <div class="row">
+        @foreach (var item in Model)
+        {
+            <div class="col-md-3 mb-4">
+                <div class="card">
+                    <img src="@Html.DisplayFor(modelItem => item.ImageUrl)" alt="Product Image" class="card-img-top" />
+                    <div class="card-body">
+                        <h5 class="card-title">@Html.DisplayFor(modelItem => item.Name)</h5>
+                        <p class="card-text">@Html.DisplayFor(modelItem => item.Description)</p>
+                        <p class="card-text"><strong>Price:</strong> @Html.DisplayFor(modelItem => item.StartingPrice)</p>
+                        <p class="card-text"><small class="text-muted">Created by: @Html.DisplayFor(modelItem => item.CreatedByUser.UserName)</small></p>
+                    </div>
+                    <div class="card-footer">
+                        <a asp-action="Edit" asp-route-id="@item.ProductId" class="btn btn-secondary btn-sm">Edit</a>
+                        <a asp-action="Details" asp-route-id="@item.ProductId" class="btn btn-info btn-sm">Details</a>
+                        <a asp-action="Delete" asp-route-id="@item.ProductId" class="btn btn-danger btn-sm">Delete</a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>

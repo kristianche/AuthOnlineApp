@@ -116,7 +116,8 @@ namespace AuthOnlineApp.Controllers
             {
                 return NotFound();
             }
-            ViewData["ProductId"] = new SelectList(_context.Set<Product>(), "ProductId", "Name", bid.ProductId);
+            ViewData["ProductId"] = new SelectList(_context.Set<Product>()
+                .Where(item => item.Deadline > DateTime.Now), "ProductId", "Name", bid.ProductId);
             ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", bid.UserId);
             return View(bid);
         }

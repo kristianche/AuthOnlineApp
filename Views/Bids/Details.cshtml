@@ -5,39 +5,108 @@
     ViewData["Title"] = "Details";
 }
 
-<h1>Details</h1>
+<!-- Page Styling -->
+<style>
+    body {
+        background: #f9f9f9; /* Light gray background for a soft look */
+        font-family: 'Arial', sans-serif;
+    }
 
-<div>
-    <h4>Bid</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Amount)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Amount)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.CreatedAt)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.CreatedAt)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Product)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Product.Name)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.User)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.User.UserName)
-        </dd>
-    </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.BidId">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    h1 {
+        color: #343a40; /* Dark gray color for the title */
+        font-size: 36px;
+        font-weight: 700;
+        text-align: center;
+        margin-top: 50px;
+    }
+
+    h4 {
+        color: #6c757d; /* Gray color for subtitle */
+        font-size: 24px;
+        margin-bottom: 20px;
+    }
+
+    .details-container {
+        background-color: #ffffff; /* White background for form */
+        border-radius: 8px;
+        padding: 20px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        margin-top: 30px;
+        max-width: 800px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+        .details-container dl {
+            margin: 0;
+            padding: 0;
+        }
+
+        .details-container dt {
+            font-weight: 600;
+            color: #343a40;
+        }
+
+        .details-container dd {
+            margin-left: 10px;
+            margin-bottom: 10px;
+            font-size: 16px;
+            color: #555;
+        }
+
+    .action-links {
+        text-align: center;
+        margin-top: 30px;
+    }
+
+        .action-links a {
+            color: #007bff;
+            font-size: 18px;
+            text-decoration: none;
+        }
+
+            .action-links a:hover {
+                text-decoration: underline;
+            }
+</style>
+
+<!-- Main Content -->
+<div class="container">
+    <h1>Details</h1>
+
+    <div class="details-container">
+        <h4>Bid</h4>
+        <hr />
+        <dl class="row">
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Amount)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Amount)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.CreatedAt)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.CreatedAt)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Product)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Product.Name)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.User)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.User.UserName)
+            </dd>
+        </dl>
+    </div>
+
+    <div class="action-links">
+        <a asp-action="Edit" asp-route-id="@Model?.BidId">Edit</a> |
+        <a asp-action="Index">Back to List</a>
+    </div>
 </div>

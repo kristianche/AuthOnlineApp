@@ -5,46 +5,134 @@
     ViewData["Title"] = "Edit";
 }
 
-<h1>Edit</h1>
+<!-- Page Styling -->
+<style>
+    body {
+        background: #f9f9f9; /* Light gray background for a soft look */
+        font-family: 'Arial', sans-serif;
+    }
 
-<h4>Bid</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
+    h1 {
+        color: #343a40; /* Dark gray color for the title */
+        font-size: 36px;
+        font-weight: 700;
+        text-align: center;
+        margin-top: 50px;
+    }
+
+    h4 {
+        color: #6c757d; /* Gray color for subtitle */
+        font-size: 24px;
+        margin-bottom: 20px;
+    }
+
+    .bid-form-container {
+        background-color: #ffffff; /* White background for form */
+        border-radius: 8px;
+        padding: 20px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        margin-top: 30px;
+        max-width: 600px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+        .bid-form-container .form-group label {
+            font-size: 16px;
+            font-weight: 600;
+            color: #343a40; /* Dark text for form labels */
+        }
+
+        .bid-form-container input[type="number"],
+        .bid-form-container select {
+            font-size: 16px;
+            padding: 10px;
+            border-radius: 4px;
+            width: 100%;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+        }
+
+        .bid-form-container input[type="submit"] {
+            padding: 12px 20px;
+            background-color: #007bff;
+            color: white;
+            font-size: 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+        }
+
+            .bid-form-container input[type="submit"]:hover {
+                background-color: #0056b3;
+            }
+
+    .action-links {
+        text-align: center;
+        margin-top: 30px;
+    }
+
+        .action-links a {
+            color: #007bff;
+            font-size: 18px;
+            text-decoration: none;
+        }
+
+            .action-links a:hover {
+                text-decoration: underline;
+            }
+</style>
+
+<!-- Main Content -->
+<div class="container">
+    <h1>Edit</h1>
+    <h4>Bid</h4>
+    <hr />
+
+    <div class="bid-form-container">
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
             <input type="hidden" asp-for="BidId" />
+
             <div class="form-group">
                 <label asp-for="Amount" class="control-label"></label>
                 <input asp-for="Amount" class="form-control" type="number" />
                 <span asp-validation-for="Amount" class="text-danger"></span>
             </div>
+
             <div class="form-group d-none">
                 <label asp-for="CreatedAt" class="control-label"></label>
                 <input asp-for="CreatedAt" class="form-control" />
                 <span asp-validation-for="CreatedAt" class="text-danger"></span>
             </div>
+
             <div class="form-group mb-3">
                 <label asp-for="ProductId" class="control-label"></label>
                 <select asp-for="ProductId" class="form-control" asp-items="ViewBag.ProductId"></select>
                 <span asp-validation-for="ProductId" class="text-danger"></span>
             </div>
+
             <div class="form-group d-none">
                 <label asp-for="UserId" class="control-label"></label>
                 <select asp-for="UserId" class="form-control" asp-items="ViewBag.UserId"></select>
                 <span asp-validation-for="UserId" class="text-danger"></span>
             </div>
+
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
             </div>
         </form>
     </div>
-</div>
 
-<div>
-    <a asp-action="Index">Back to My Bids</a>
+    <div class="action-links">
+        <a asp-action="Index">Back to My Bids</a>
+    </div>
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

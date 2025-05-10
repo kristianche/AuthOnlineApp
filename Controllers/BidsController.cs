@@ -66,7 +66,8 @@ namespace AuthOnlineApp.Controllers
         [Authorize]
         public async Task<IActionResult> CreateAsync()
         {
-            ViewData["ProductId"] = new SelectList(_context.Set<Product>(), "ProductId", "Name");
+            ViewData["ProductId"] = new SelectList(_context.Set<Product>()
+                .Where(item => item.Deadline > DateTime.Now), "ProductId", "Name");
             var userId = (await _userManager.GetUserAsync(User)).Id;
             ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", userId);
             return View();

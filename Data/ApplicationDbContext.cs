@@ -16,11 +16,6 @@ namespace AuthOnlineApp.Data
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<Product>()
-                .HasOne(p => p.CreatedByUser)
-                .WithMany()
-                .HasForeignKey(p => p.CreatedByUserId)
-                .OnDelete(DeleteBehavior.Restrict);
         }
         public DbSet<Bid> Bid { get; set; } = default!;
         public DbSet<Product> Product { get; set; } = default!;

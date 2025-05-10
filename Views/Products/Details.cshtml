@@ -1,5 +1,8 @@
 ﻿@using AuthOnlineApp.Data
 @model Product
+@using Microsoft.AspNetCore.Identity
+@inject UserManager<IdentityUser> UserManager
+
 
 @{
     ViewData["Title"] = "Details";
@@ -87,6 +90,32 @@
 else
 {
     <p>No bids found for this product.</p>
+}
+
+@{
+    var currentUserId = UserManager.GetUserId(User);
+    var isOwner = Model.CreatedByUserId == currentUserId;
+}
+
+<hr />
+<h4>Place a Bid</h4>
+
+@if (!isOwner)
+{
+    <form asp-controller="Bid" asp-action="Create" method="post" class="mt-3">
+        <input type="hidden" name="ProductId" value="@Model.ProductId" />
+        <div class="form-group mb-2">
+            <label for="Amount">Bid Amount</label>
+            <input type="number" name="Amount" step="0.01" required class="form-control" />
+        </div>
+        <button type="submit" class="btn btn-success">Place Bid</button>
+    </form>
+}
+else
+{
+    <div class="alert alert-warning mt-3">
+        Не можете да наддавате за собствен продукт.
+    </div>
 }
 
 <div>

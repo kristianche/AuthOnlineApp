@@ -115,7 +115,7 @@ namespace AuthOnlineApp.Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Bid");
+                    b.ToTable("Bid", (string)null);
                 });
 
             modelBuilder.Entity("AuthOnlineApp.Data.Product", b =>
@@ -163,7 +163,7 @@ namespace AuthOnlineApp.Data.Migrations
 
                     b.HasIndex("CreatedByUserId");
 
-                    b.ToTable("Product");
+                    b.ToTable("Product", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>

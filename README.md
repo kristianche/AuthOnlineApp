@@ -1,3 +1,4 @@
 # AuthOnlineApp
 
-This is a .Net project about Bids and Products.
+This is a .Net  about Bids and Products.
+

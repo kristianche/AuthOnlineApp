@@ -1,8 +1,108 @@
-﻿@{
+﻿@model List<AuthOnlineApp.Data.Product>
+
+@{
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+
+
+<form asp-action="Index" method="get">
+    <div class="input-group mb-3">
+
+        <input type="text" class="form-control" name="searchString" placeholder="Search products..." value="@ViewData["CurrentFilter"]" />
+
+
+        <input type="number" step="0.01" class="form-control" name="minPrice" placeholder="Min Highest Bid" value="@ViewData["MinPriceFilter"]" />
+
+
+        <input type="number" step="0.01" class="form-control" name="maxPrice" placeholder="Max Highest Bid" value="@ViewData["MaxPriceFilter"]" />
+
+
+        <button class="btn btn-primary" type="submit">Filter</button>
+    </div>
+</form>
+
+@if (Model != null && Model.Any())
+{
+    <div class="product-cards-container">
+        @foreach (var item in Model)
+        {
+            <div class="product-card">
+                <img src="@item.ImageUrl" alt="@item.Name" class="product-image" />
+                <h5 class="product-name">@item.Name</h5>
+                <p class="product-price">Starting Price: @item.StartingPrice</p>
+                <p class="product-price">Deadline: @item.Deadline</p>
+
+
+                <p class="current-bid">Current Bids: @item.Bids?.Count</p>
+                <p class="current-bid">
+                    Highest Bid:
+                    @if (item.Bids?.Count > 0)
+                    {
+                        @item.Bids.Max(bid => bid.Amount)
+                    }
+                    else
+                    {
+                        @item.StartingPrice
+                    }
+                </p>
+
+                <p>
+                    @if (DateTime.Now <= item.Deadline)
+                    {
+                        <a href="@Url.Action("Create", "Bids", new { productId = item.ProductId })
+                                    " class="btn btn-primary">
+                            Place Bid
+                        </a>
+                    }
+                </p>
+                <p>
+                    <a href="@Url.Action("Details", "Products", new { id = item.ProductId })" class="btn btn-secondary">
+                        View Details
+                    </a>
+                </p>
+            </div>
+        }
+    </div>
+}
+else
+{
+    <p>No products found.</p>
+}
+
+<style>
+    .product-cards-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+        justify-content: center;
+    }
+
+    .product-card {
+        width: 250px;
+        padding: 20px;
+        border: 1px solid #ccc;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        background-color: #fff;
+    }
+
+    .product-image {
+        width: 100%;
+        height: auto;
+        border-radius: 5px;
+        margin-bottom: 15px;
+    }
+
+    .product-name {
+        font-size: 1.2rem;
+        font-weight: bold;
+        margin-bottom: 10px;
+    }
+
+    .product-price {
+        font-size: 1rem;
+        color: #555;
+    }
+</style>

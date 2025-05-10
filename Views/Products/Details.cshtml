@@ -1,0 +1,89 @@
+﻿@using AuthOnlineApp.Data
+@model Product
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+@{
+    var searchUsername = Context.Request.Query["searchUsername"].ToString();
+    var minAmountStr = Context.Request.Query["minAmount"].ToString();
+    var maxAmountStr = Context.Request.Query["maxAmount"].ToString();
+    var filterDateStr = Context.Request.Query["filterDate"].ToString(); // changed here
+
+    decimal.TryParse(minAmountStr, out var minAmount);
+    decimal.TryParse(maxAmountStr, out var maxAmount);
+    DateTime.TryParse(filterDateStr, out var filterDate); // changed here
+}
+
+<h2>Product Details</h2>
+<div>
+    <p><strong>Name:</strong> @Model.Name</p>
+    <p><strong>Description:</strong> @Model.Description</p>
+    <p><strong>Starting Price:</strong> @Model.StartingPrice</p>
+    <p><strong>Deadline:</strong> @Model.Deadline</p>
+    <p><strong>Created By:</strong> @Model.CreatedByUser?.UserName</p>
+    <p><img src="@Model.ImageUrl" alt="Product Image" style="max-width:300px;" /></p>
+</div>
+
+<h4>Filter Bids</h4>
+<form method="get" class="row g-2 mb-3">
+    <input type="hidden" name="id" value="@Model.ProductId" />
+    <div class="col-md-3">
+        <input type="text" name="searchUsername" value="@searchUsername" class="form-control" placeholder="Username" />
+    </div>
+    <div class="col-md-2">
+        <input type="number" name="minAmount" step="0.01" value="@minAmountStr" class="form-control" placeholder="Min Amount" />
+    </div>
+    <div class="col-md-2">
+        <input type="number" name="maxAmount" step="0.01" value="@maxAmountStr" class="form-control" placeholder="Max Amount" />
+    </div>
+    <div class="col-md-3">
+        <input type="date" name="filterDate" value="@filterDateStr" class="form-control" placeholder="Bid Date" />
+    </div>
+    <div class="col-md-2">
+        <button class="btn btn-primary">Filter</button>
+    </div>
+</form>
+
+@if (Model.Bids != null && Model.Bids.Any())
+{
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Bidder</th>
+                <th>Amount</th>
+                <th>Placed On</th>
+            </tr>
+        </thead>
+        <tbody>
+            @for (int i = 0; i < Model.Bids.Count; i++)
+            {
+                var bid = Model.Bids.ElementAt(i);
+
+                bool matchesUser = string.IsNullOrEmpty(searchUsername) || (bid.User != null && bid.User.UserName != null && bid.User.UserName.Contains(searchUsername, StringComparison.OrdinalIgnoreCase));
+                bool matchesMin = string.IsNullOrEmpty(minAmountStr) || bid.Amount >= minAmount;
+                bool matchesMax = string.IsNullOrEmpty(maxAmountStr) || bid.Amount <= maxAmount;
+                bool matchesDate = string.IsNullOrEmpty(filterDateStr) || bid.CreatedAt.Date == filterDate.Date; // changed here
+
+                if (matchesUser && matchesMin && matchesMax && matchesDate)
+                {
+                    <tr>
+                        <td>@bid.User?.UserName</td>
+                        <td>@bid.Amount</td>
+                        <td>@bid.CreatedAt.ToString("g")</td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>No bids found for this product.</p>
+}
+
+<div>
+    <a asp-action="Edit" asp-route-id="@Model?.ProductId">Edit</a> |
+    <a asp-action="Index">Back to My Products</a>
+</div>

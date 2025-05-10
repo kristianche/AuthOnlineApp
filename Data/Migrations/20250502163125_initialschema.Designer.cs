@@ -4,6 +4,7 @@ using AuthOnlineApp.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AuthOnlineApp.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250502163125_initialschema")]
+    partial class initialschema
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -22,7 +25,7 @@ namespace AuthOnlineApp.Data.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("AuthOnlineApp.Data.ApplicationUser", b =>
+            modelBuilder.Entity("AuthOnlineApp.Models.ApplicationUser", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
@@ -87,7 +90,7 @@ namespace AuthOnlineApp.Data.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
-            modelBuilder.Entity("AuthOnlineApp.Data.Bid", b =>
+            modelBuilder.Entity("AuthOnlineApp.Models.Bid", b =>
                 {
                     b.Property<int>("BidId")
                         .ValueGeneratedOnAdd()
@@ -118,7 +121,7 @@ namespace AuthOnlineApp.Data.Migrations
                     b.ToTable("Bid");
                 });
 
-            modelBuilder.Entity("AuthOnlineApp.Data.Product", b =>
+            modelBuilder.Entity("AuthOnlineApp.Models.Product", b =>
                 {
                     b.Property<int>("ProductId")
                         .ValueGeneratedOnAdd()
@@ -136,22 +139,13 @@ namespace AuthOnlineApp.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<DateTime>("Deadline")
-                        .HasColumnType("datetime2");
-
                     b.Property<string>("Description")
-                        .IsRequired()
-                        .HasMaxLength(1000)
-                        .HasColumnType("nvarchar(1000)");
-
-                    b.Property<string>("ImageUrl")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("StartingPrice")
                         .HasPrecision(18, 2)
@@ -303,15 +297,15 @@ namespace AuthOnlineApp.Data.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("AuthOnlineApp.Data.Bid", b =>
+            modelBuilder.Entity("AuthOnlineApp.Models.Bid", b =>
                 {
-                    b.HasOne("AuthOnlineApp.Data.Product", "Product")
+                    b.HasOne("AuthOnlineApp.Models.Product", "Product")
                         .WithMany("Bids")
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("AuthOnlineApp.Data.ApplicationUser", "User")
+                    b.HasOne("AuthOnlineApp.Models.ApplicationUser", "User")
                         .WithMany("Bids")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -322,13 +316,13 @@ namespace AuthOnlineApp.Data.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("AuthOnlineApp.Data.Product", b =>
+            modelBuilder.Entity("AuthOnlineApp.Models.Product", b =>
                 {
-                    b.HasOne("AuthOnlineApp.Data.ApplicationUser", null)
+                    b.HasOne("AuthOnlineApp.Models.ApplicationUser", null)
                         .WithMany("Products")
                         .HasForeignKey("ApplicationUserId");
 
-                    b.HasOne("AuthOnlineApp.Data.ApplicationUser", "CreatedByUser")
+                    b.HasOne("AuthOnlineApp.Models.ApplicationUser", "CreatedByUser")
                         .WithMany()
                         .HasForeignKey("CreatedByUserId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -348,7 +342,7 @@ namespace AuthOnlineApp.Data.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("AuthOnlineApp.Data.ApplicationUser", null)
+                    b.HasOne("AuthOnlineApp.Models.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -357,7 +351,7 @@ namespace AuthOnlineApp.Data.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("AuthOnlineApp.Data.ApplicationUser", null)
+                    b.HasOne("AuthOnlineApp.Models.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -372,7 +366,7 @@ namespace AuthOnlineApp.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("AuthOnlineApp.Data.ApplicationUser", null)
+                    b.HasOne("AuthOnlineApp.Models.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -381,21 +375,21 @@ namespace AuthOnlineApp.Data.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("AuthOnlineApp.Data.ApplicationUser", null)
+                    b.HasOne("AuthOnlineApp.Models.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("AuthOnlineApp.Data.ApplicationUser", b =>
+            modelBuilder.Entity("AuthOnlineApp.Models.ApplicationUser", b =>
                 {
                     b.Navigation("Bids");
 
                     b.Navigation("Products");
                 });
 
-            modelBuilder.Entity("AuthOnlineApp.Data.Product", b =>
+            modelBuilder.Entity("AuthOnlineApp.Models.Product", b =>
                 {
                     b.Navigation("Bids");
                 });

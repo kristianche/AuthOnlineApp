@@ -7,6 +7,7 @@
 
 <h1>My Products</h1>
 
+
 <p>
     <a asp-action="Create">Create New Product</a>
 </p>
@@ -32,6 +33,13 @@
             <th></th>
         </tr>
     </thead>
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger custom-error">
+            @TempData["ErrorMessage"]
+        </div>
+    }
     <tbody>
 @foreach (var item in Model) {
         <tr>

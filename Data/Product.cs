@@ -29,7 +29,7 @@ namespace AuthOnlineApp.Data
         public string CreatedByUserId { get; set; }
 
         public virtual ApplicationUser? CreatedByUser { get; set; }
-
+            
         public virtual ICollection<Bid>? Bids { get; set; }
     }
 }

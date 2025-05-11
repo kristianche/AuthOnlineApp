@@ -1,6 +1,6 @@
-# AuthOnlineApp
+# Trust Market 
 
-**AuthOnlineApp** is a simple ASP.NET Core application that demonstrates user authentication, product listing, and bidding functionality. It uses Razor Pages and local in-memory storage for ease of setup and testing, making it ideal for learning and lightweight use cases.
+**Trust Market** is a simple ASP.NET Core application that demonstrates user authentication, product listing, and bidding functionality. It uses Razor Pages and local in-memory storage for ease of setup and testing, making it ideal for learning and lightweight use cases.
 
 ---
 

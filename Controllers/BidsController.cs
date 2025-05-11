@@ -67,17 +67,27 @@ namespace AuthOnlineApp.Controllers
         [Authorize]
         public async Task<IActionResult> CreateAsync(int productId)
         {
+            var product = await _context.Product.FindAsync(productId);
+            var user = await _userManager.GetUserAsync(User);
+
+            if (product == null)
+            {
+                return NotFound();
+            }
+
+            if (product.CreatedByUserId == user.Id)
+            {
+                return Forbid();
+            }
+
             ViewData["ProductId"] = new SelectList(_context.Set<Product>()
                 .Where(item => item.Deadline > DateTime.Now), "ProductId", "Name", productId);
-            var userId = (await _userManager.GetUserAsync(User)).Id;
-            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", userId);
+            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", user.Id);
             return View();
         }
 
         [Authorize]
         // POST: Bids/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("BidId,Amount,CreatedAt,ProductId,UserId")] Bid bid)
@@ -85,6 +95,14 @@ namespace AuthOnlineApp.Controllers
             if (ModelState.IsValid)
             {
                 var product = _context.Product.Find(bid.ProductId);
+                var user = await _userManager.GetUserAsync(User);
+
+                
+                if (product.CreatedByUserId == user.Id)
+                {
+                    return Forbid();
+                }
+
                 var startingPrice = product.StartingPrice;
                 if (bid.Amount <= startingPrice)
                 {
@@ -116,15 +134,12 @@ namespace AuthOnlineApp.Controllers
             {
                 return NotFound();
             }
-            ViewData["ProductId"] = new SelectList(_context.Set<Product>()
-                .Where(item => item.Deadline > DateTime.Now), "ProductId", "Name", bid.ProductId);
+            ViewData["ProductId"] = new SelectList(_context.Set<Product>(), "ProductId", "Name", bid.ProductId);
             ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", bid.UserId);
             return View(bid);
         }
 
         // POST: Bids/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("BidId,Amount,CreatedAt,ProductId,UserId")] Bid bid)

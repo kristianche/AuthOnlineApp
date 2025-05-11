@@ -19,7 +19,7 @@ namespace AuthOnlineApp.Controllers
 
         public async Task<IActionResult> Index(string? searchString, decimal? minPrice, decimal? maxPrice)
         {
-            ViewData["ShowDashboard"] = true; // Set to true to show the dashboard section on Home page
+            ViewData["ShowDashboard"] = true;
 
             var products = _context.Product.AsQueryable();
 
@@ -50,7 +50,7 @@ namespace AuthOnlineApp.Controllers
                 products = filteredProducts.Select(p => p.Product);
             }
 
-            return View(await products.ToListAsync()); // This line uses ToListAsync
+            return View(await products.ToListAsync());
         }
 
         public IActionResult Privacy()

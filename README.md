@@ -50,7 +50,7 @@
 3. **Apply Migrations**
    ```bash
    update-database
-4. **Run the App
+4. **Run the App**
    ```bash
    dotnet run
    

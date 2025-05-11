@@ -3,10 +3,11 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - AuthOnlineApp</title>
+    <title>@ViewData["Title"] - Trust Market</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/AuthOnlineApp.styles.css" asp-append-version="true" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet" />
 
     <style>
         html, body {
@@ -27,25 +28,30 @@
             font-family: 'Arial', sans-serif;
         }
 
-
-
-        nav.navbar {
-            border-bottom: none !important;
-            box-shadow: none !important;
-            margin-bottom: 0 !important;
+        .custom-navbar {
+            background: linear-gradient(90deg, #4b4b4b, #1c1c1c);
+            padding: 0.75rem 1rem;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
         }
 
         .navbar-brand {
             font-weight: bold;
-            font-size: 1.5rem;
+            font-size: 1.75rem;
+            color: #fff !important;
+            letter-spacing: 1px;
         }
 
-        .navbar-nav .nav-item .nav-link {
-            color: white;
+        .navbar-nav .nav-link {
+            color: #fff; /* Default text color */
+            transition: color 0.3s;
+            padding: 10px 20px;
+            border-radius: 6px;
         }
 
-            .navbar-nav .nav-item .nav-link:hover {
-                color: #ffc107;
+            .navbar-nav .nav-link:hover,
+            .navbar-nav .nav-link.active {
+                background-color: #007bff; 
+                color: white; 
             }
 
         .profile-section {
@@ -104,10 +110,6 @@
             border-radius: 5px;
         }
 
-            .btn-custom:hover {
-                background-color: #0056b3;
-            }
-
         footer {
             background-color: #343a40;
             color: white;
@@ -115,30 +117,74 @@
             padding: 15px 0;
             margin-top: 60px;
         }
+
+        .navbar-nav .btn {
+            padding: 6px 14px;
+            font-size: 0.9rem;
+            border-radius: 6px;
+            margin-left: 8px;
+        }
+
+        .auth-buttons {
+            display: flex;
+            align-items: center;
+        }
     </style>
 </head>
 <body>
     <div class="wrapper">
         <header>
-            <nav class="navbar navbar-expand-sm navbar-light bg-white mb-3">
+            <nav class="navbar navbar-expand-sm navbar-dark custom-navbar">
                 <div class="container-fluid">
-                    <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">AuthOnlineApp</a>
+                    <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Trust Market</a>
                     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse">
                         <span class="navbar-toggler-icon"></span>
                     </button>
                     <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                         <ul class="navbar-nav flex-grow-1">
+                            <!-- Made these links look like buttons with the .btn-primary class -->
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                                <a class="btn btn-primary text-white" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Products" asp-action="Index">My Products</a>
+                                <a class="btn btn-primary text-white" asp-area="" asp-controller="Products" asp-action="Index">My Products</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Bids" asp-action="Index">My Bids</a>
+                                <a class="btn btn-primary text-white" asp-area="" asp-controller="Bids" asp-action="Index">My Bids</a>
                             </li>
                         </ul>
-                        <partial name="_LoginPartial" />
+
+                        <!-- Auth buttons -->
+                        <ul class="navbar-nav auth-buttons">
+                            @if (User.Identity.IsAuthenticated)
+                            {
+                                <li class="nav-item">
+                                    <a class="btn btn-primary text-white" asp-area="Identity" asp-page="/Account/Manage/Index">
+                                        <i class="bi bi-person-circle"></i> @User.Identity.Name
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <form asp-area="Identity" asp-page="/Account/Logout" method="post" class="d-inline">
+                                        <button type="submit" class="btn btn-primary text-white">
+                                            <i class="bi bi-box-arrow-right"></i> Logout
+                                        </button>
+                                    </form>
+                                </li>
+                            }
+                            else
+                            {
+                                <li class="nav-item">
+                                    <a class="btn btn-primary text-white" asp-area="Identity" asp-page="/Account/Register">
+                                        <i class="bi bi-person-plus"></i> Register
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="btn btn-primary text-white" asp-area="Identity" asp-page="/Account/Login">
+                                        <i class="bi bi-box-arrow-in-right"></i> Login
+                                    </a>
+                                </li>
+                            }
+                        </ul>
                     </div>
                 </div>
             </nav>
@@ -150,7 +196,9 @@
                 <h2>Welcome</h2>
                 <p class="username">@User.Identity.Name</p>
                 <div class="col-md-12 text-center mb-4">
-                    <a asp-controller="Products" asp-action="Create" class="btn btn-light btn-lg">Create New Product</a>
+                    <a asp-controller="Products" asp-action="Create" class="btn btn-primary btn-lg text-white">
+                        <i class="bi bi-plus-circle"></i> Create New Product
+                    </a>
                 </div>
             </section>
         }
@@ -164,7 +212,7 @@
 
     <footer>
         <div class="container">
-            &copy; 2025 - AuthOnlineApp -
+            &copy; 2025 - Trust Market -
             <a asp-area="" asp-controller="Home" asp-action="Privacy" class="text-white">Privacy</a>
         </div>
     </footer>

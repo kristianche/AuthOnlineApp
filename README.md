@@ -1,56 +1,98 @@
-# Trust Market 
 
-**Trust Market** is a simple ASP.NET Core application that demonstrates user authentication, product listing, and bidding functionality. It uses Razor Pages and local in-memory storage for ease of setup and testing, making it ideal for learning and lightweight use cases.
+#  Trust Market – ASP.NET Core Web Application for Products and Bidding
 
----
-
-## ✨ Features
-
-- 🔐 **User Authentication**
-  - Register, Login, and Logout
-  - Secure session-based access
-
-- 🛍️ **Product Listing**
-  - View available products
-  - Add/Edit products (admin only)
-
-- 💸 **Bidding System**
-  - Place bids on listed products
-  - View current highest bids
-
-- 🧑‍💼 **Role Management**
-  - Basic roles: User and Admin
-  - Role-based page access
-
----
-
-## 🧰 Tech Stack
-
-- **Framework**: ASP.NET Core (Razor Pages)
-- **Language**: C#
-- **Authentication**: ASP.NET Core Identity
-- **Storage**: In-memory (no database required)
-- **UI**: Bootstrap (optional, for styling)
+**Trust Market** is a web application developed with ASP.NET Core that enables secure product listings and bidding functionality. Users can register, log in, browse available products, and place bids in a simple and safe environment.
 
 ---
 
 ## 🚀 Getting Started
 
-### ✅ Prerequisites
+### 📋 Prerequisites
+- [.NET 6.0 SDK](https://dotnet.microsoft.com/en-us/download/dotnet/6.0)
+- [SQL Server](https://www.microsoft.com/en-us/sql-server/sql-server-downloads)
+- [Docker](https://www.docker.com/) (optional)
 
-- [.NET SDK 6+](https://dotnet.microsoft.com/download)
+### 🔧 Installation and Setup
 
-### 🔧 How to Run
-
-1. **Clone the Repository**:
-
+1. **Clone the repository**:
    ```bash
    git clone https://github.com/kristianche/AuthOnlineApp.git
-2. **Open Package Manager Console**
-3. **Apply Migrations**
+   cd AuthOnlineApp
+   ```
+
+2. **Apply migrations and update the database**:
    ```bash
-   update-database
-4. **Run the App**
+   dotnet ef database update
+   ```
+
+3. **Run the application**:
    ```bash
    dotnet run
-   
+   ```
+   Then open your browser and navigate to:
+   ```
+   https://localhost:{port}
+   ```
+
+---
+
+## 🐳 Running with Docker (Optional)
+
+1. **Build the Docker image**:
+   ```bash
+   docker build -t authonlineapp .
+   ```
+
+2. **Run the Docker container**:
+   ```bash
+   docker run -d -p 5000:80 --name authonlineapp_container authonlineapp
+   ```
+   Access the app at:
+   ```
+   http://localhost:5000
+   ```
+
+---
+
+## ✨ Features
+
+- **User Registration and Login**  
+  Secure authentication system using ASP.NET Core Identity.
+
+- **Product Management**  
+  Users can create, update, and delete product listings.
+
+- **Bidding System**  
+  Users can place bids on available products.
+
+- **User-Friendly Interface**  
+  Built with Razor Pages for intuitive navigation and interaction.
+
+- **Docker Support**  
+  Easily deploy the application using Docker containers.
+
+---
+
+## 🛠️ Technologies Used
+
+- **Language**: C#  
+- **Framework**: ASP.NET Core 6.0  
+- **Frontend**: Razor Pages  
+- **Database**: Entity Framework Core + SQL Server  
+- **Authentication**: ASP.NET Core Identity  
+- **Containerization**: Docker
+
+---
+
+## 📁 Project Structure
+
+- `Areas/Identity/Pages` – Authentication and authorization pages  
+- `Controllers/` – HTTP request handlers  
+- `Data/` – Database context and seed data  
+- `Models/` – Application data models  
+- `Views/` – Razor view templates  
+- `wwwroot/` – Static assets (CSS, JavaScript, images)  
+- `Dockerfile` – Docker image instructions  
+- `Program.cs` – Application entry point
+
+---

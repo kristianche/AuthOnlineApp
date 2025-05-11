@@ -46,4 +46,11 @@
 
    ```bash
    git clone https://github.com/kristianche/AuthOnlineApp.git
-   cd AuthOnlineApp
+2. **Open Package Manager Console**
+3. **Apply Migrations**
+   ```bash
+   update-database
+4. **Run the App
+   ```bash
+   dotnet run
+   

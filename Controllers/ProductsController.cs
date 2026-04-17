@@ -29,9 +29,11 @@ namespace AuthOnlineApp.Controllers
         {
             if (User.IsInRole("Admin"))
             {
-                var items = _context.Bid
-                    .Include(b => b.Product).Include(b => b.User);
-                return View(await items.ToListAsync());
+                var userId = (await _userManager.GetUserAsync(User)).Id;
+                var applicationDbContext = _context.Product
+                    .Where(item => item.CreatedByUserId == userId)
+                    .Include(p => p.CreatedByUser);
+                return View(await applicationDbContext.ToListAsync());
             }
             else
             {

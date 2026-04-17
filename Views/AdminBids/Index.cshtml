@@ -1,0 +1,19 @@
+﻿@using AuthOnlineApp.Data
+@model List<Bid>
+
+<h2>Bids</h2>
+
+<table border="1" cellpadding="5">
+    <tr>
+        <th>Amount</th>
+        <th>Date</th>
+    </tr>
+
+    @foreach (var b in Model)
+    {
+        <tr>
+            <td>@b.Amount</td>
+            <td>@b.CreatedAt</td>
+        </tr>
+    }
+</table>

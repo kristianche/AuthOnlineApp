@@ -42,7 +42,7 @@
         }
 
         .navbar-nav .nav-link {
-            color: #fff; /* Default text color */
+            color: #fff;
             transition: color 0.3s;
             padding: 10px 20px;
             border-radius: 6px;
@@ -50,8 +50,8 @@
 
             .navbar-nav .nav-link:hover,
             .navbar-nav .nav-link.active {
-                background-color: #007bff; 
-                color: white; 
+                background-color: #007bff;
+                color: white;
             }
 
         .profile-section {
@@ -131,30 +131,48 @@
         }
     </style>
 </head>
+
 <body>
     <div class="wrapper">
         <header>
             <nav class="navbar navbar-expand-sm navbar-dark custom-navbar">
                 <div class="container-fluid">
                     <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Trust Market</a>
+
                     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse">
                         <span class="navbar-toggler-icon"></span>
                     </button>
+
                     <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+
+                        <!-- LEFT MENU -->
                         <ul class="navbar-nav flex-grow-1">
-                            <!-- Made these links look like buttons with the .btn-primary class -->
+
                             <li class="nav-item">
                                 <a class="btn btn-primary text-white" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                             </li>
+
                             <li class="nav-item">
                                 <a class="btn btn-primary text-white" asp-area="" asp-controller="Products" asp-action="Index">My Products</a>
                             </li>
+
                             <li class="nav-item">
                                 <a class="btn btn-primary text-white" asp-area="" asp-controller="Bids" asp-action="Index">My Bids</a>
                             </li>
+
+                            <!-- ✅ ADMIN BUTTON ADDED HERE -->
+                            @if (User.IsInRole("Admin"))
+                            {
+                                <li class="nav-item">
+                                    <a class="btn btn-warning text-white" asp-controller="Admin" asp-action="Index">
+                                        Admin Panel
+                                    </a>
+                                </li>
+                            }
+
                         </ul>
 
-                        <!-- Auth buttons -->
+                        <!-- AUTH BUTTONS -->
                         <ul class="navbar-nav auth-buttons">
                             @if (User.Identity.IsAuthenticated)
                             {
@@ -163,8 +181,9 @@
                                         <i class="bi bi-person-circle"></i> @User.Identity.Name
                                     </a>
                                 </li>
+
                                 <li class="nav-item">
-                                    <form asp-area="Identity" asp-page="/Account/Logout" method="post" class="d-inline">
+                                    <form asp-controller="Account" asp-action="Logout" method="post" class="d-inline">
                                         <button type="submit" class="btn btn-primary text-white">
                                             <i class="bi bi-box-arrow-right"></i> Logout
                                         </button>
@@ -178,6 +197,7 @@
                                         <i class="bi bi-person-plus"></i> Register
                                     </a>
                                 </li>
+
                                 <li class="nav-item">
                                     <a class="btn btn-primary text-white" asp-area="Identity" asp-page="/Account/Login">
                                         <i class="bi bi-box-arrow-in-right"></i> Login
@@ -185,6 +205,7 @@
                                 </li>
                             }
                         </ul>
+
                     </div>
                 </div>
             </nav>

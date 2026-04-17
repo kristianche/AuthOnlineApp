@@ -1,0 +1,23 @@
+﻿@using AuthOnlineApp.Data
+@model List<Product>
+
+<h2>Products</h2>
+
+<table border="1" cellpadding="5">
+    <tr>
+        <th>Name</th>
+        <th>Price</th>
+        <th>Action</th>
+    </tr>
+
+    @foreach (var p in Model)
+    {
+        <tr>
+            <td>@p.Name</td>
+            <td>@p.StartingPrice</td>
+            <td>
+                <a href="/AdminProducts/Delete/@p.ProductId">Delete</a>
+            </td>
+        </tr>
+    }
+</table>

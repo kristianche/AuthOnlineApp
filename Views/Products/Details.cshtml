@@ -1,4 +1,7 @@
 ﻿@using AuthOnlineApp.Data
+@using Microsoft.AspNetCore.Identity
+@inject UserManager<ApplicationUser> UserManager
+
 @model Product
 
 @{
@@ -9,22 +12,23 @@
     var searchUsername = Context.Request.Query["searchUsername"].ToString();
     var minAmountStr = Context.Request.Query["minAmount"].ToString();
     var maxAmountStr = Context.Request.Query["maxAmount"].ToString();
-    var filterDateStr = Context.Request.Query["filterDate"].ToString(); // changed here
+    var filterDateStr = Context.Request.Query["filterDate"].ToString();
 
     decimal.TryParse(minAmountStr, out var minAmount);
     decimal.TryParse(maxAmountStr, out var maxAmount);
-    DateTime.TryParse(filterDateStr, out var filterDate); // changed here
+    DateTime.TryParse(filterDateStr, out var filterDate);
+
+    var currentUserId = UserManager.GetUserId(User);
 }
 
-<!-- Page Styling -->
 <style>
     body {
-        background: #f9f9f9; /* Light gray background for a soft look */
+        background: #f9f9f9;
         font-family: 'Arial', sans-serif;
     }
 
     h2 {
-        color: #343a40; /* Dark gray color for the title */
+        color: #343a40;
         font-size: 36px;
         font-weight: 700;
         text-align: center;
@@ -33,7 +37,7 @@
     }
 
     .product-details {
-        background-color: #ffffff; /* White background for product details */
+        background-color: #ffffff;
         border-radius: 8px;
         padding: 20px;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -42,11 +46,11 @@
 
         .product-details p {
             font-size: 18px;
-            color: #6c757d; /* Light gray text color */
+            color: #6c757d;
         }
 
         .product-details strong {
-            color: #343a40; /* Dark gray for the labels */
+            color: #343a40;
         }
 
         .product-details img {
@@ -63,26 +67,6 @@
         margin-bottom: 30px;
     }
 
-        .filter-form input[type="text"], .filter-form input[type="number"], .filter-form input[type="date"] {
-            font-size: 16px;
-            padding: 10px;
-            border-radius: 4px;
-        }
-
-        .filter-form button {
-            padding: 10px 20px;
-            font-size: 16px;
-            background-color: #007bff;
-            color: #ffffff;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-
-            .filter-form button:hover {
-                background-color: #0056b3;
-            }
-
     .product-bids-table {
         width: 100%;
         margin-top: 20px;
@@ -91,7 +75,6 @@
 
         .product-bids-table th, .product-bids-table td {
             padding: 12px;
-            text-align: left;
             border-bottom: 1px solid #ddd;
         }
 
@@ -100,27 +83,12 @@
             color: white;
         }
 
-        .product-bids-table tr:hover {
-            background-color: #f1f1f1;
-        }
-
     .action-links {
         text-align: center;
         margin-top: 30px;
     }
-
-        .action-links a {
-            color: #007bff;
-            text-decoration: none;
-            font-size: 18px;
-        }
-
-            .action-links a:hover {
-                text-decoration: underline;
-            }
 </style>
 
-<!-- Main Content -->
 <div class="container">
     <h2>Product Details</h2>
 
@@ -136,26 +104,18 @@
     <h4>Filter Bids</h4>
     <form method="get" class="filter-form row g-2 mb-3">
         <input type="hidden" name="id" value="@Model.ProductId" />
-        <div class="col-md-3">
-            <input type="text" name="searchUsername" value="@searchUsername" class="form-control" placeholder="Username" />
-        </div>
-        <div class="col-md-2">
-            <input type="number" name="minAmount" step="0.01" value="@minAmountStr" class="form-control" placeholder="Min Amount" />
-        </div>
-        <div class="col-md-2">
-            <input type="number" name="maxAmount" step="0.01" value="@maxAmountStr" class="form-control" placeholder="Max Amount" />
-        </div>
-        <div class="col-md-3">
-            <input type="date" name="filterDate" value="@filterDateStr" class="form-control" placeholder="Bid Date" />
-        </div>
-        <div class="col-md-2">
-            <button class="btn btn-primary">Filter</button>
-        </div>
+
+        <input type="text" name="searchUsername" value="@searchUsername" placeholder="Username" />
+        <input type="number" name="minAmount" step="0.01" value="@minAmountStr" placeholder="Min Amount" />
+        <input type="number" name="maxAmount" step="0.01" value="@maxAmountStr" placeholder="Max Amount" />
+        <input type="date" name="filterDate" value="@filterDateStr" />
+
+        <button>Filter</button>
     </form>
 
     @if (Model.Bids != null && Model.Bids.Any())
     {
-        <table class="table table-bordered product-bids-table">
+        <table class="product-bids-table">
             <thead>
                 <tr>
                     <th>Bidder</th>
@@ -164,21 +124,19 @@
                 </tr>
             </thead>
             <tbody>
-                @for (int i = 0; i < Model.Bids.Count; i++)
+                @foreach (var bid in Model.Bids)
                 {
-                    var bid = Model.Bids.ElementAt(i);
-
-                    bool matchesUser = string.IsNullOrEmpty(searchUsername) || (bid.User != null && bid.User.UserName != null && bid.User.UserName.Contains(searchUsername, StringComparison.OrdinalIgnoreCase));
+                    bool matchesUser = string.IsNullOrEmpty(searchUsername) || bid.User?.UserName?.Contains(searchUsername) == true;
                     bool matchesMin = string.IsNullOrEmpty(minAmountStr) || bid.Amount >= minAmount;
                     bool matchesMax = string.IsNullOrEmpty(maxAmountStr) || bid.Amount <= maxAmount;
-                    bool matchesDate = string.IsNullOrEmpty(filterDateStr) || bid.CreatedAt.Date == filterDate.Date; // changed here
+                    bool matchesDate = string.IsNullOrEmpty(filterDateStr) || bid.CreatedAt.Date == filterDate.Date;
 
                     if (matchesUser && matchesMin && matchesMax && matchesDate)
                     {
                         <tr>
                             <td>@bid.User?.UserName</td>
                             <td>@bid.Amount</td>
-                            <td>@bid.CreatedAt.ToString("g")</td>
+                            <td>@bid.CreatedAt</td>
                         </tr>
                     }
                 }
@@ -187,17 +145,36 @@
     }
     else
     {
-        <p>No bids found for this product.</p>
+        <p>No bids found.</p>
     }
 
     <div class="action-links">
-        <a asp-action="Edit" asp-route-id="@Model?.ProductId">Edit</a> |
+
+        @if (User.Identity.IsAuthenticated)
+        {
+            if (Model.CreatedByUserId == currentUserId)
+            {
+                <p style="color:red;">You can't bid for your own product.</p>
+            }
+            else
+            {
+                <a asp-controller="Bids"
+                   asp-action="Create"
+                   asp-route-productId="@Model.ProductId"
+                   class="btn btn-success">
+                    Bid
+                </a>
+            }
+        }
+        else
+        {
+            <p style="color:red;">You must log in to bid.</p>
+            <a href="/Identity/Account/Login" class="btn btn-primary">Login</a>
+        }
+
+        <br /><br />
+
+        <a asp-action="Edit" asp-route-id="@Model.ProductId">Edit</a> |
         <a asp-action="Index">Back to My Products</a>
     </div>
 </div>
-
-@section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
-}

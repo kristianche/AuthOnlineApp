@@ -70,10 +70,15 @@ namespace AuthOnlineApp.Controllers
             if (product == null)
                 return NotFound();
 
-            // ❌ не може да наддаваш за свой продукт
             if (product.CreatedByUserId == user.Id)
             {
                 TempData["Error"] = "You can't bid for your own product.";
+                return RedirectToAction("Details", "Products", new { id = productId });
+            }
+
+            if (product.Deadline < DateTime.Now)
+            {
+                TempData["Error"] = "Auction is already closed.";
                 return RedirectToAction("Details", "Products", new { id = productId });
             }
 
@@ -103,13 +108,17 @@ namespace AuthOnlineApp.Controllers
             if (product == null)
                 return NotFound();
 
-            // ❌ не може да наддаваш за собствен продукт
+            if (product.Deadline < DateTime.Now)
+            {
+                ModelState.AddModelError("", "Auction is closed.");
+            }
+
             if (product.CreatedByUserId == user.Id)
             {
                 ModelState.AddModelError("", "You can't bid for your own product.");
             }
 
-            // 🔥 взимаме най-високия bid
+            // 🔥 най-висок bid логика
             var highestBid = product.Bids?
                 .OrderByDescending(b => b.Amount)
                 .FirstOrDefault();
@@ -118,7 +127,6 @@ namespace AuthOnlineApp.Controllers
                 ? highestBid.Amount
                 : product.StartingPrice;
 
-            // ❌ валидиране
             if (bid.Amount <= minimumAmount)
             {
                 ModelState.AddModelError("Amount",
@@ -147,8 +155,17 @@ namespace AuthOnlineApp.Controllers
         {
             if (id == null) return NotFound();
 
-            var bid = await _context.Bid.FindAsync(id);
+            var bid = await _context.Bid
+                .Include(b => b.Product)
+                .FirstOrDefaultAsync(b => b.BidId == id);
+
             if (bid == null) return NotFound();
+
+            if (bid.Product.Deadline < DateTime.Now)
+            {
+                TempData["Error"] = "Auction is closed. You cannot edit this bid.";
+                return RedirectToAction(nameof(Index));
+            }
 
             ViewData["ProductId"] = new SelectList(_context.Set<Product>(), "ProductId", "Name", bid.ProductId);
             ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", bid.UserId);
@@ -163,11 +180,26 @@ namespace AuthOnlineApp.Controllers
         {
             if (id != bid.BidId) return NotFound();
 
+            var existingBid = await _context.Bid
+                .Include(b => b.Product)
+                .FirstOrDefaultAsync(b => b.BidId == id);
+
+            if (existingBid == null)
+                return NotFound();
+
+            if (existingBid.Product.Deadline < DateTime.Now)
+            {
+                TempData["Error"] = "Auction is closed. You cannot edit this bid.";
+                return RedirectToAction(nameof(Index));
+            }
+
             if (ModelState.IsValid)
             {
                 try
                 {
-                    _context.Update(bid);
+                    existingBid.Amount = bid.Amount;
+
+                    _context.Update(existingBid);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
@@ -199,6 +231,12 @@ namespace AuthOnlineApp.Controllers
 
             if (bid == null) return NotFound();
 
+            if (bid.Product.Deadline < DateTime.Now)
+            {
+                TempData["Error"] = "Auction is closed. You cannot delete bids.";
+                return RedirectToAction(nameof(Index));
+            }
+
             return View(bid);
         }
 
@@ -207,14 +245,15 @@ namespace AuthOnlineApp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var bid = await _context.Bid.FindAsync(id);
+            var bid = await _context.Bid
+                .Include(b => b.Product)
+                .FirstOrDefaultAsync(b => b.BidId == id);
 
-            if (bid != null)
+            if (bid != null && bid.Product.Deadline >= DateTime.Now)
             {
                 _context.Bid.Remove(bid);
+                await _context.SaveChangesAsync();
             }
-
-            await _context.SaveChangesAsync();
 
             return RedirectToAction(nameof(Index));
         }

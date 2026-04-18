@@ -67,8 +67,10 @@ namespace AuthOnlineApp.Controllers
             var product = await _context.Product.FindAsync(productId);
             var user = await _userManager.GetUserAsync(User);
 
-            if (product == null) return NotFound();
+            if (product == null)
+                return NotFound();
 
+            // ❌ не може да наддаваш за свой продукт
             if (product.CreatedByUserId == user.Id)
             {
                 TempData["Error"] = "You can't bid for your own product.";
@@ -92,33 +94,50 @@ namespace AuthOnlineApp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("BidId,Amount,CreatedAt,ProductId,UserId")] Bid bid)
         {
+            var user = await _userManager.GetUserAsync(User);
+
+            var product = await _context.Product
+                .Include(p => p.Bids)
+                .FirstOrDefaultAsync(p => p.ProductId == bid.ProductId);
+
+            if (product == null)
+                return NotFound();
+
+            // ❌ не може да наддаваш за собствен продукт
+            if (product.CreatedByUserId == user.Id)
+            {
+                ModelState.AddModelError("", "You can't bid for your own product.");
+            }
+
+            // 🔥 взимаме най-високия bid
+            var highestBid = product.Bids?
+                .OrderByDescending(b => b.Amount)
+                .FirstOrDefault();
+
+            decimal minimumAmount = highestBid != null
+                ? highestBid.Amount
+                : product.StartingPrice;
+
+            // ❌ валидиране
+            if (bid.Amount <= minimumAmount)
+            {
+                ModelState.AddModelError("Amount",
+                    $"Your bid must be higher than {minimumAmount}.");
+            }
+
             if (ModelState.IsValid)
             {
-                var product = await _context.Product.FindAsync(bid.ProductId);
-                var user = await _userManager.GetUserAsync(User);
+                bid.CreatedAt = DateTime.Now;
+                bid.UserId = user.Id;
 
-                if (product.CreatedByUserId == user.Id)
-                {
-                    ModelState.AddModelError("", "You can't bid for your own product.");
-                }
+                _context.Add(bid);
+                await _context.SaveChangesAsync();
 
-                if (bid.Amount <= product.StartingPrice)
-                {
-                    ModelState.AddModelError("Amount", "Amount should be at least equal to starting price.");
-                }
-
-                if (ModelState.IsValid)
-                {
-                    _context.Add(bid);
-                    await _context.SaveChangesAsync();
-                    return RedirectToAction(nameof(Index));
-                }
+                return RedirectToAction(nameof(Index));
             }
 
             ViewData["ProductId"] = new SelectList(_context.Set<Product>(), "ProductId", "Name", bid.ProductId);
-
-            var userId = (await _userManager.GetUserAsync(User)).Id;
-            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", userId);
+            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", user.Id);
 
             return View(bid);
         }
@@ -163,9 +182,7 @@ namespace AuthOnlineApp.Controllers
             }
 
             ViewData["ProductId"] = new SelectList(_context.Set<Product>(), "ProductId", "Name", bid.ProductId);
-
-            var userId = (await _userManager.GetUserAsync(User)).Id;
-            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", userId);
+            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", bid.UserId);
 
             return View(bid);
         }

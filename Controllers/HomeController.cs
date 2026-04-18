@@ -1,9 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore; 
+using Microsoft.EntityFrameworkCore;
 using AuthOnlineApp.Data;
 using AuthOnlineApp.Models;
 using System.Diagnostics;
-    
+
 namespace AuthOnlineApp.Controllers
 {
     public class HomeController : Controller
@@ -54,6 +54,12 @@ namespace AuthOnlineApp.Controllers
         }
 
         public IActionResult Privacy()
+        {
+            return View();
+        }
+
+        
+        public IActionResult AccessDenied()
         {
             return View();
         }
